@@ -5,6 +5,11 @@ object Contants {
     //예를 들어 사용자이름, 퀴즈에 사용할 질문, 정답 등
 
     //QuizQuestions 액티비티에서 다음 질문을 가져와 표시하는 함수
+
+    const val USER_NAME : String = "user_name"
+    const val TOTAL_QUESTIONS : String = "total_questions"
+    const val CORRECT_ANSWERS : String = "correct_answers"
+
     fun getQuestion(): ArrayList<Question> { //xml json 등 리소스 대신할 것
         val questionsList = ArrayList<Question>()
 

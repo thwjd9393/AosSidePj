@@ -1,6 +1,7 @@
 package com.mbsysoft.myquizapp
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +12,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 
 class QuizQuestionsActivity : AppCompatActivity(),View.OnClickListener {
@@ -29,12 +31,17 @@ class QuizQuestionsActivity : AppCompatActivity(),View.OnClickListener {
 
     private var mCurrentPosition : Int = 1
     private var mQuestionList : ArrayList<Question>? = null
-    private var mSelectOptionPosition:Int = 0 //버튼을 눌렀을 때 재정의 하기 위한 변수, 어떤 버튼을 눌렀늕비 알기 위한 것
+    private var mSelectOptionPosition:Int = 0 //버튼을 눌렀을 때 재정의 하기 위한 변수, 어떤 버튼을 눌렀는지 알기 위한 것
 
-    @SuppressLint("SetTextI18n")
+    private var mUserName : String? = null
+    private var mCorrectAnsers : Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz_questions)
+
+        mUserName = intent.getStringExtra(Contants.USER_NAME)
+        mCorrectAnsers = 0
 
         progressBar = findViewById(R.id.progressbar)
         tvProgress = findViewById(R.id.tv_progress)
@@ -62,8 +69,8 @@ class QuizQuestionsActivity : AppCompatActivity(),View.OnClickListener {
 
     private fun setQuestion() {
 
+        defaultOptionView()
 
-        mCurrentPosition = 1
         val question: Question = mQuestionList!![mCurrentPosition - 1]
 
         ivImage?.setImageResource(question.image)
@@ -143,7 +150,72 @@ class QuizQuestionsActivity : AppCompatActivity(),View.OnClickListener {
                 }
             }
             R.id.btn_submit -> {
+                if (mSelectOptionPosition == 0) {
+                    mCurrentPosition++
 
+                    when {
+                        mCurrentPosition <= mQuestionList!!.size -> {
+                            setQuestion()
+                        }
+                        else -> {
+                            Toast.makeText(this, "The End!", Toast.LENGTH_SHORT).show()
+
+                            val intent = Intent(this, ResultActivity::class.java)
+                            intent.putExtra(Contants.USER_NAME, mUserName)
+                            intent.putExtra(Contants.CORRECT_ANSWERS,mCorrectAnsers)
+                            intent.putExtra(Contants.TOTAL_QUESTIONS,mQuestionList?.size)
+                            startActivity(intent)
+                            finish()
+                        }
+                    }
+                } else {
+                    // 질문 불러오기
+                    val question = mQuestionList?.get(mCurrentPosition-1)
+
+                    if(question!!.correctAnswer != mSelectOptionPosition) {
+                        anserView(mSelectOptionPosition, R.drawable.wrong_option_border_bg)
+                    } else {
+                        mCorrectAnsers++
+                    }
+                    anserView(question.correctAnswer , R.drawable.correct_option_border_bg) //무엇을 선택하든 정답을 보여주기 위해 else밖에 씀
+
+                    if (mCurrentPosition == mQuestionList!!.size) {
+                        btnSubmit?.text = "FINISH"
+                    } else {
+                        btnSubmit?.text = "GO TO NEXT QUESTION"
+                    }
+
+                    mSelectOptionPosition = 0
+                }
+            }
+        }
+    }
+
+    private fun anserView(answer:Int, drawableView:Int) {
+        when(answer) {
+            1 -> {
+                tvQu1?.background = ContextCompat.getDrawable(
+                    this,
+                    drawableView
+                )
+            }
+            2 -> {
+                tvQu2?.background = ContextCompat.getDrawable(
+                    this,
+                    drawableView
+                )
+            }
+            3 -> {
+                tvQu3?.background = ContextCompat.getDrawable(
+                    this,
+                    drawableView
+                )
+            }
+            4 -> {
+                tvQu4?.background = ContextCompat.getDrawable(
+                    this,
+                    drawableView
+                )
             }
         }
     }
