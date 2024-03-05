@@ -6,21 +6,51 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.mbsysoft.myapplication.DrawindView
-        android:id="@+id/drawing_view"
+    <!-- 이미지뷰와 드로잉뷰를 겹치기 위해 framelayout을 둠 -->
+    <FrameLayout
+        android:id="@+id/fl_drawing_view_container"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="5dp"
+        android:padding="1dp"
         android:background="@drawable/bg_drawing_view_layout"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/ll_color_selector"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_foreground"
+            />
+
+        <com.mbsysoft.myapplication.DrawindView
+            android:id="@+id/drawing_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/dv_background"
+            />
+
+    </FrameLayout>
+
+<!--    <com.mbsysoft.myapplication.DrawindView-->
+<!--        android:id="@+id/drawing_view"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_margin="5dp"-->
+<!--        android:background="@drawable/bg_drawing_view_layout"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/ll_color_selector"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"/>-->
 
     <LinearLayout
         android:id="@+id/ll_color_selector"
-        app:layout_constraintTop_toBottomOf="@+id/drawing_view"
-        app:layout_constraintBottom_toTopOf="@+id/ib_brush"
+        app:layout_constraintTop_toBottomOf="@+id/fl_drawing_view_container"
+        app:layout_constraintBottom_toTopOf="@+id/ll_selector_warp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="wrap_content"
@@ -129,27 +159,49 @@
 
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/ib_brush"
-        android:layout_margin="5dp"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/ic_brush"
-        android:scaleType="fitXY"
+    <LinearLayout
+        android:id="@+id/ll_selector_warp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        />
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-    <ImageButton
-        android:id="@+id/ib_undo"
-        android:layout_margin="5dp"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/ic_undo"
-        app:layout_constraintTop_toBottomOf="@+id/drawing_view"
-        app:layout_constraintLeft_toRightOf="@+id/ib_brush"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+        <ImageButton
+            android:id="@+id/ib_gallery"
+            android:layout_margin="5dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_gallery"
+            android:scaleType="fitXY"
+            />
+
+        <ImageButton
+            android:id="@+id/ib_brush"
+            android:layout_margin="5dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_brush"
+            android:scaleType="fitXY"
+            />
+
+        <ImageButton
+            android:id="@+id/ib_undo"
+            android:layout_margin="5dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_undo"
+            />
+
+        <ImageButton
+            android:id="@+id/ib_save"
+            android:layout_margin="5dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_save"
+            />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

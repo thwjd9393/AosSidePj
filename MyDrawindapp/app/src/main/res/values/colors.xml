@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="brush">#656565</color>
     <color name="brush_select">#FF333333</color>
+    <color name="dv_background">#80FFFFFF</color>
 
     <color name="yellow">#FFEB3B</color>
     <color name="skin">#FFDFB1</color>
