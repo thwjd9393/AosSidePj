@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 
@@ -24,6 +25,7 @@ class DrawindView(context: Context, attrs:AttributeSet) : View(context, attrs) {
     private var mbrushSize: Float = 0f
     private var color = Color.BLACK
     private var convas : Canvas? = null
+    private val mPaths = ArrayList<CustomPath>()
 
     init {
         setUpDrawing()
@@ -37,7 +39,7 @@ class DrawindView(context: Context, attrs:AttributeSet) : View(context, attrs) {
         mDrawPaint!!.strokeJoin = Paint.Join.ROUND //스트록 시작
         mDrawPaint!!.strokeCap = Paint.Cap.ROUND //스트록 끝 Cap : 선 끝의 위치를 정함
         mCanvasPaint = Paint(Paint.DITHER_FLAG) //페인트(색상)를 정하기
-        mbrushSize = 20f
+//        mbrushSize = 20f
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) { //화면 크리가 바뀔때마다 불러오는 메소드
@@ -50,6 +52,12 @@ class DrawindView(context: Context, attrs:AttributeSet) : View(context, attrs) {
 
     override fun onDraw(canvas: Canvas) {
         canvas.drawBitmap(mCanvasBitmap!!, 0f,0f, mCanvasPaint)
+
+        for (path in mPaths) {
+            mDrawPaint!!.strokeWidth = path.brushThickness
+            mDrawPaint!!.color = path.color //선마다 글자두꼐나 색이 다를 수 있으니 mDrawPath 대신 각각의 path에 붙여줌
+            canvas.drawPath(path, mDrawPaint!!)
+        }
 
         if(!mDrawPath!!.isEmpty){
             //브러쉬 사이즈 지정
@@ -86,6 +94,7 @@ class DrawindView(context: Context, attrs:AttributeSet) : View(context, attrs) {
                 }
             }
             MotionEvent.ACTION_UP -> {
+                mPaths.add(mDrawPath!!)
                 mDrawPath = CustomPath(color, mbrushSize)
             }
             else -> return false
@@ -94,6 +103,14 @@ class DrawindView(context: Context, attrs:AttributeSet) : View(context, attrs) {
         invalidate() //전체 뷰의 모든 이미지 없앰, 무효화
 
         return true
+    }
+
+    fun setSizeForBrush(newSize:Float) {
+        mbrushSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+            newSize, resources.displayMetrics)
+            //TypedValue.COMPLEX_UNIT_DIP => 픽셀의 밀도 정함
+            //resources.displayMetrics => 화면의 측정 단위에 따라 조정됨
+        mDrawPaint!!.strokeWidth = mbrushSize
     }
 
     //internal inner : CustomPath 내부에서만 사용, 변수를 가져오고 내보낼 수 있음
