@@ -113,6 +113,11 @@ class DrawindView(context: Context, attrs:AttributeSet) : View(context, attrs) {
         mDrawPaint!!.strokeWidth = mbrushSize
     }
 
+    fun setColor(newColor:String) {
+        color = Color.parseColor(newColor) //색상표 string으로 취급
+        mDrawPaint!!.color = color
+    }
+
     //internal inner : CustomPath 내부에서만 사용, 변수를 가져오고 내보낼 수 있음
     internal inner class CustomPath(var color:Int,
                                     var brushThickness:Float) : Path(){
