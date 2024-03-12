@@ -1,6 +1,7 @@
 package com.mbsysoft.permissionpractice
 
 import android.Manifest
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -81,6 +82,10 @@ class MainActivity : AppCompatActivity() {
                         Manifest.permission.ACCESS_COARSE_LOCATION,)
                     )
             }
+        }
+
+        findViewById<Button>(R.id.btnSnackBarTest).setOnClickListener {
+            startActivity(Intent(this,SnackBarActivity::class.java))
         }
 
     }

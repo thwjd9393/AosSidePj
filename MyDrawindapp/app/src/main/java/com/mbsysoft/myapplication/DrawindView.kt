@@ -26,9 +26,27 @@ class DrawindView(context: Context, attrs:AttributeSet) : View(context, attrs) {
     private var color = Color.BLACK
     private var convas : Canvas? = null
     private val mPaths = ArrayList<CustomPath>()
+    private val mUndoPaths = ArrayList<CustomPath>()
 
     init {
         setUpDrawing()
+    }
+
+    fun onClickUndo() {
+        if (mPaths.size > 0) {
+            mUndoPaths.add(mPaths.removeAt(mPaths.size -1))
+            invalidate() 
+            //onDraw를 한 번더 불러 올 건데 직접 코드를 작성하지 않고 invalidate기능을 사용해 내부로 onDraw를 불러온다
+            //이유 => onDraw 오버라이드 메소드는 뷰는 건드리지않는다. 이 메서드는 뷰 안에 존재 하고 있음
+            // 그라고 DrawingView는 뷰타입 클래스이기 떄문에 전체 페이지를 무효화하는 것
+        }
+    }
+
+    fun onClickRedo() {
+        if (mUndoPaths.size > 0) {
+            mPaths.add(mUndoPaths.removeAt(mUndoPaths.size -1))
+            invalidate()
+        }
     }
 
     private fun setUpDrawing() {
@@ -51,6 +69,8 @@ class DrawindView(context: Context, attrs:AttributeSet) : View(context, attrs) {
     }
 
     override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+
         canvas.drawBitmap(mCanvasBitmap!!, 0f,0f, mCanvasPaint)
 
         for (path in mPaths) {
