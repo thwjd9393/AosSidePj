@@ -3,11 +3,17 @@ package com.mbsysoft.myapplication
 import android.Manifest
 import android.app.Dialog
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.media.MediaScannerConnection
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -19,11 +25,19 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 
 class MainActivity : AppCompatActivity() {
 
     private var drawingView:DrawindView? = null
     private var mIvCurrentPaint : ImageButton? = null
+    var customProgressDialog : Dialog? = null
 
     val openGallertLauncher : ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
@@ -61,6 +75,7 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,9 +112,26 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<ImageButton>(R.id.ib_save).setOnClickListener {
 
+            if (isReadStorageAllowed()) {
+                showProgressDialog()
+                lifecycleScope.launch {
+                    val flDrawingView : FrameLayout = findViewById(R.id.fl_drawing_view_container)
+//                    val myBitmap = getBitmapFromView(flDrawingView)
+//                    saveBitmapFile(myBitmap)
+                    saveBitmapFile(getBitmapFromView(flDrawingView))//프레임 레이아웃을 전달
+
+                }
+            }
         }
 
+    }
 
+    //모든 버전에 두 함수 모두 포함되었는지 확인하는 매소드
+    private fun isReadStorageAllowed() : Boolean {
+        val result = ContextCompat.checkSelfPermission(this,
+            Manifest.permission.READ_EXTERNAL_STORAGE,)
+
+        return result == PackageManager.PERMISSION_GRANTED
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -112,6 +144,7 @@ class MainActivity : AppCompatActivity() {
             requestPermission.launch(
                 arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE,
                     // TODO : 외부 저장소 데이터 출력 추가
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
                     ))
         }
     }
@@ -160,6 +193,63 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun getBitmapFromView(view: View) : Bitmap {
+        val returnBitmap = Bitmap.createBitmap(view.width,
+            view.height, Bitmap.Config.ARGB_8888)
+
+        val canvas = Canvas(returnBitmap)
+        val bgDrawable = view.background
+        if (bgDrawable != null) {
+            bgDrawable.draw(canvas)
+        } else {
+            canvas.drawColor(Color.WHITE)
+        }
+
+        view.draw(canvas)
+
+        return returnBitmap
+    }
+
+    private suspend fun saveBitmapFile(mBitmap: Bitmap?):String {
+        var result = "" //이미지 저장할 변수
+        withContext(Dispatchers.IO) {
+            if (mBitmap != null) {
+                try {// OutputStream 을 사용할 땐 오류에 대비해 try문에 쓴다
+                    val bytes = ByteArrayOutputStream() //새로운 바이트 배열 출력 스트림을 생성하는 이미지를 출력하는 것
+                    mBitmap.compress(Bitmap.CompressFormat.PNG, 90, bytes)// 사용하고 싶은 포맷인 quality와 OutputStream 전달
+
+                    val f = File(externalCacheDir?.absoluteFile.toString() +
+                        File.separator + "kidDrawingApp_" + System.currentTimeMillis() / 1000 + ".png" //저장 위치 지정
+                    )
+
+                    val fo = FileOutputStream(f)
+                    fo.write(bytes.toByteArray())
+                    fo.flush()
+                    fo.close()
+
+                    result = f.absolutePath
+
+                    runOnUiThread {
+                        cancelProgressDialog()
+                        if(result.isNotEmpty()) {
+                            Toast.makeText(this@MainActivity, "$result", Toast.LENGTH_SHORT).show()
+
+                            shareImage(result)
+
+                        } else {
+                            Toast.makeText(this@MainActivity, "문제 생심", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } catch (e : Exception) {
+                    result = ""
+                    e.printStackTrace()
+                }
+            }
+        }
+
+        return result
+    }
+
     private fun showRationaleDialog(
         title : String,
         message : String,) {
@@ -169,6 +259,39 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
             }.create().show()
+    }
+
+    private fun showProgressDialog() {
+        customProgressDialog = Dialog(this@MainActivity)
+
+        customProgressDialog?.setContentView(R.layout.dialog_custom_progress)
+
+        customProgressDialog?.show()
+    }
+
+    private fun cancelProgressDialog() {
+        if (customProgressDialog != null) {
+            customProgressDialog?.dismiss()
+            customProgressDialog = null
+        }
+    }
+
+    private fun shareImage(result:String) {
+        //MediaScannerConnection
+        //파일로부터 미터 데이터를 읽어내고 media content provider에 파일을 추가한다
+        //그다음 미디어 스캐너 서비스 인터페이스를 제공하는 미디어 스캐너 연결 클라이언트를 사용하여
+        //미디어 스캐너 연결 클래스의 클라이언트에 미디어 검색 파일 uri를 반환한다
+
+        MediaScannerConnection.scanFile(this, arrayOf(result), null) {
+            //패스와 uri 연결
+            path, uri ->
+            val sharIntent = Intent()
+            sharIntent.action = Intent.ACTION_SEND //아이템을 보낼 수 있는 인텐트
+            sharIntent.putExtra(Intent.EXTRA_STREAM, uri)
+            sharIntent.type = "image/png"
+            startActivity(Intent.createChooser(sharIntent, "Share"))
+
+        }
     }
 
 }

@@ -4,6 +4,10 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"
+        tools:ignore="ScopedStorage" />
+
 
     <application
         android:allowBackup="true"
@@ -25,6 +29,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <provider
+            android:authorities="com.mbsysoft.myapplication.fileprovider"
+            android:name="androidx.core.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/path"
+                />
+            <!--
+            - authorities : 콘텐츠 제공자에서 제공되는 데이터를 식별하는 URI 권한을 하나 이상 보여주는 목록,
+            일반적으로 이름은 제공자를 구현하는 ContentProvider 서브클래스 이름이다.
+            기본값 없음, 권한을 하나 이상 지정해 줘야함
+            - exported : 다른 앱에서 콘텐츠 제공자를 사용할 수 있는지 여부
+            - grantUriPermissions : 일반적으로는 콘텐츠 제공자 데이터에 엑세스할 권한이 없는 사용자에게 액세스 부여하는 것
+            readPermission, writePermission, permission, exported 속성에 따른 제한을 일시적으로 사용할 수 있는지 여부
+            -->
+        </provider>
+        
     </application>
 
 </manifest>
