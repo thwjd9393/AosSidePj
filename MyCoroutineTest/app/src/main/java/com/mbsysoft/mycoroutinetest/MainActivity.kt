@@ -1,12 +1,20 @@
 package com.mbsysoft.mycoroutinetest
 
+import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import kotlinx.coroutines.CoroutineScope
+import android.util.Log
+import android.widget.Button
+import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
+
+    var customProgressDialog: Dialog? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -16,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         /**
          * 코루틴이란?
          * 1. Light Weight
-         * -> 서스펜션의 지원으로 단일 스레드에서 많은 코루틴 실행 가능
+         * -> 서스펜션스의 지원으로 단일 스레드에서 많은 코루틴 실행 가능
          * 2. fewer memory leaks
          * -> 코루틴과 특정 스코프를 실행하면 스코프 끝에서 종료될 때 누출이 발생하지 않음
          * 3. built in cancellation support
@@ -77,6 +85,47 @@ class MainActivity : AppCompatActivity() {
             job.cancle
         }
         **/
+
+        val btn : Button = findViewById(R.id.btn)
+        btn.setOnClickListener {
+            showProgressDialog()
+
+            lifecycleScope.launch {
+                execute()
+            }
+        }
         
     }
+
+    private suspend fun execute() {
+        //withContext 매소드를 사용해 task를 실행, withContext는 프로세스가 완료될 떄 까지 작업을
+        //다른 스레드로 이동시키시 위해 만들어진 매소드임
+        //그런 다음 원래 스레드로 다시 이동한다 그다음 Dispatchers.IO를 전달하여 입력함
+        //그러면 task를 다른 스레드인 input output 스레드로 옮긴다
+        withContext(Dispatchers.IO) {
+            for (i in 1..100000) {
+                Log.e("delay : ", " $i");
+            }
+            runOnUiThread {
+                cancelProgressDialog()
+                Toast.makeText(this@MainActivity, "Done", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun showProgressDialog() {
+        customProgressDialog = Dialog(this@MainActivity)
+
+        customProgressDialog?.setContentView(R.layout.dialog_custom_progress)
+
+        customProgressDialog?.show()
+    }
+
+    private fun cancelProgressDialog() {
+        if (customProgressDialog != null) {
+            customProgressDialog?.dismiss()
+            customProgressDialog = null
+        }
+    }
+
 }
