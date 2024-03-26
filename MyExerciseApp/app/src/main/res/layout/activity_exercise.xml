@@ -59,8 +59,6 @@
         indeterminate : 시간이 얼마나 걸릴지 알기때문에 false로 설정
         얼마나 걸릴지 모르면 true
         -->
-
-
         <LinearLayout
             android:background="@drawable/item_circular_color_accent_background"
             android:layout_gravity="center"
@@ -73,6 +71,57 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="10"
+                android:textColor="@color/white"
+                android:textSize="@dimen/timer"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_progressbar2"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"
+        android:background="@drawable/item_circular_color_accent_border"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_exercise"
+        >
+
+        <ProgressBar
+            android:id="@+id/progressbarEx"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:background="@drawable/circular_progress_grey"
+            android:progressDrawable="@drawable/circular_progress_bar"
+            android:indeterminate="false"
+            android:layout_gravity="center"
+            android:max="30"
+            android:progress="300"
+            android:rotation="-90"
+            android:layout_width="100dp"
+            android:layout_height="100dp"/>
+        <!--
+        indeterminate : 시간이 얼마나 걸릴지 알기때문에 false로 설정
+        얼마나 걸릴지 모르면 true
+        -->
+
+
+        <LinearLayout
+            android:background="@drawable/item_circular_color_accent_background"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="60dp"
+            android:layout_height="60dp">
+
+            <TextView
+                android:id="@+id/tv_timerEx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="30"
                 android:textColor="@color/white"
                 android:textSize="@dimen/timer"
                 android:textStyle="bold"/>
