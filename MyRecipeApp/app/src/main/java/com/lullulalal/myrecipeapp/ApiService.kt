@@ -7,12 +7,13 @@ import retrofit2.http.GET
 //Retrofit.Builder()는 엔드포인트를 준비시키고 Json converter를 추가하는 일을 함
 //그 다음 create 메소드를 제공하는데 이는 서비스 메소드에 대한 액세스 권한을 위임한다
 private val retrofit = Retrofit.Builder()
-    .baseUrl("www.themealdb.com/api/json/v1/1/")
+    .baseUrl("https://www.themealdb.com/api/json/v1/1/")
     .addConverterFactory(GsonConverterFactory.create())
     .build()
 
 val recepeService = retrofit.create(ApiService::class.java)
 //해당 서비스가 필요하다는 것을 의미
+//recepeServices는 ApiService를 외부에서 사용할 수 있도록 노출시켜주는 변수
 
 interface ApiService {
 
