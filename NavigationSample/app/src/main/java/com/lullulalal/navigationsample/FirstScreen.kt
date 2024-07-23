@@ -27,7 +27,7 @@ import com.lullulalal.navigationsample.ui.theme.NavigationSampleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FirstScreen(navigationToSecondScreen:()->Unit) {
+fun FirstScreen(navigationToSecondScreen:(String)->Unit) {
     val name = remember {
         mutableStateOf("")
     }
@@ -45,7 +45,7 @@ fun FirstScreen(navigationToSecondScreen:()->Unit) {
             name.value = it
         })
         Button(onClick = {
-            navigationToSecondScreen()
+            navigationToSecondScreen(name.value)
         }) {
             Text(text = "이동")
         }

@@ -16,7 +16,8 @@ import androidx.compose.ui.unit.sp
 import com.lullulalal.navigationsample.ui.theme.NavigationSampleTheme
 
 @Composable
-fun SecondScreen(navigateToThirdScreen:()->Unit) {
+//fun SecondScreen(name:String, navigateToThirdScreen:(nameToFirst)->Unit) {
+fun SecondScreen(name:String, navigationToFirstScreen:()->Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -25,9 +26,10 @@ fun SecondScreen(navigateToThirdScreen:()->Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Second", fontSize = 24.sp)
-        Text(text = "hihi~", fontSize = 24.sp)
+        Text(text = "welcome $name", fontSize = 24.sp)
         Button(onClick = {
-            navigateToThirdScreen()
+//            navigateToThirdScreen()
+            navigationToFirstScreen()
         }) {
             Text(text = "Go to Third Screen")
         }
@@ -38,6 +40,6 @@ fun SecondScreen(navigateToThirdScreen:()->Unit) {
 @Composable
 fun SecondScreenPreview() {
     NavigationSampleTheme {
-        SecondScreen({})
+        SecondScreen("Rose",{})
     }
 }
