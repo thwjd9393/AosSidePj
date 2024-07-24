@@ -27,8 +27,11 @@ import com.lullulalal.navigationsample.ui.theme.NavigationSampleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FirstScreen(navigationToSecondScreen:(String)->Unit) {
+fun FirstScreen(navigationToSecondScreen:(String,String)->Unit) {
     val name = remember {
+        mutableStateOf("")
+    }
+    val age = remember {
         mutableStateOf("")
     }
 
@@ -44,8 +47,12 @@ fun FirstScreen(navigationToSecondScreen:(String)->Unit) {
         OutlinedTextField(value = name.value, onValueChange = {
             name.value = it
         })
+        Spacer(modifier = Modifier.height(16.dp))
+        OutlinedTextField(value = age.value, onValueChange = {
+            age.value = it
+        })
         Button(onClick = {
-            navigationToSecondScreen(name.value)
+            navigationToSecondScreen(name.value, age.value)
         }) {
             Text(text = "이동")
         }
@@ -56,6 +63,6 @@ fun FirstScreen(navigationToSecondScreen:(String)->Unit) {
 @Composable
 fun FirstScreenPreview() {
     NavigationSampleTheme {
-        FirstScreen({})
+//        FirstScreen("","",{})
     }
 }

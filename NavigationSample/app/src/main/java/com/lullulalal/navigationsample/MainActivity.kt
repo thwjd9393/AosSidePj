@@ -41,14 +41,15 @@ fun myApp() {
         //route는 앱 어디서든 화면을 식별하는데 사용함
         composable(route = "firstScreen"){
             //firstScreen을 경로로 하는 컴포저블이 실행될 때 무슨 일이 일어나야 하는지 정의
-            FirstScreen {name->
-                navController.navigate("secondScreen/$name") //경로에 데이터
+            FirstScreen {name, age->
+                navController.navigate("secondScreen/$name/$age") //경로에 데이터
             }
         }
-        composable(route = "secondScreen/{name}"){
+        composable(route = "secondScreen/{name}/{age}"){
             val name = it.arguments?.getString("name") ?: "no data"
+            val age = it.arguments?.getString("age") ?: "no age"
             //첫번째 화면에서 아무것도 입력하지않고 버튼 클릭하면 no data 나옴
-            SecondScreen(name){
+            SecondScreen(name,age){
 //             navController.navigate("thirdScreen")
                 navController.navigate("firstScreen")
             }
