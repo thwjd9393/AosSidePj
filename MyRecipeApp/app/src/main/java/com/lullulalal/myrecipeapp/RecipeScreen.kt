@@ -1,6 +1,7 @@
 package com.lullulalal.myrecipeapp
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -25,10 +26,13 @@ import coil.compose.rememberAsyncImagePainter
 //사용자한테 보여질 UI 담당 파일
 
 @Composable
-fun RecipeScreen(modifier: Modifier = Modifier) {
+fun RecipeScreen(modifier: Modifier = Modifier,
+                 viewState:MainViewModel.RecipeState,
+                 navigateTorecipeDetailScreen: (Category) -> Unit) {
+
     val recipeViewModel : MainViewModel = viewModel() //데이터 가져오는 역할
-    val viewState by recipeViewModel.categoriesState
-    //getValue import -> state의 값을 바로 가져올 수 있도록 해주는 애
+//    val viewState by recipeViewModel.categoriesState
+//    -- 기존에 바로 viewState를 만들어서 사용한 대신 ReciprApp에서 전달해주기 위해 삭제
 
     //ui 그리기용
     Box(modifier = Modifier.fillMaxSize()) {
@@ -42,7 +46,7 @@ fun RecipeScreen(modifier: Modifier = Modifier) {
             }
             else -> {
                 //제대로 로딩됐을 때
-                CategorScreen(categories = viewState.list)
+                CategorScreen(categories = viewState.list, navigateTorecipeDetailScreen)
             }
         }
     }
@@ -50,23 +54,26 @@ fun RecipeScreen(modifier: Modifier = Modifier) {
 
 //리스트 항목을 생성하기 위한 view
 @Composable
-fun CategorScreen(categories : List<Category>) {
+fun CategorScreen(categories : List<Category>,
+                  navigateTorecipeDetailScreen: (Category) -> Unit) {
     //LazyVerticalGrid => 항목을 격자 무늬로 배치
     LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.fillMaxSize()) {
         //아이템과 ui 연결
         items(categories) {
             category ->
-            CategoyItem(category = category)
+            CategoyItem(category = category, navigateTorecipeDetailScreen)
         }
     }
 }
 
 //각 아이템 생김새 ui
 @Composable
-fun CategoyItem(category: Category) {
+fun CategoyItem(category: Category,
+                navigateTorecipeDetailScreen: (Category) -> Unit) {
     Column(modifier = Modifier
-        .padding(8.dp)
-        .fillMaxSize(),
+            .padding(8.dp)
+            .fillMaxSize()
+            .clickable { navigateTorecipeDetailScreen(category) }, //clickable은 modifier의 속성 중 하나
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
