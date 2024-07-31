@@ -26,7 +26,7 @@ class LocationViewModel : ViewModel() {
         try {
             viewModelScope.launch {
                 val result = RetrofitClient.create()
-                    .getAddressFromCoordinates(latLng, "AIzaSyDMYxWckMd7AuM2YXcYdJCP91i6CdmLpOM")
+                    .getAddressFromCoordinates(latLng, "")
 
                 _address.value = result.results //리스트의 첫번째 항목을 가져와 화면에 표시할 것임
             }
