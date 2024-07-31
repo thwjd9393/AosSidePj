@@ -139,6 +139,7 @@ fun ShoppingListApp(
                             editedItem?.let {
                                 it.name = editedName //편집 항목의 이름이 지금 텍스트 입력창에 입력한 이름이로 변경
                                 it.quantity = editedQuanitity
+                                it.address = address
                             }
                         })
                     } else {
@@ -211,7 +212,8 @@ fun ShoppingListApp(
                             val newItem = ShoppingItem(
                                 id = sItems.size+1,
                                 name = itemName,
-                                quantity = itemQuntity.toInt()
+                                quantity = itemQuntity.toInt(),
+                                address = address
                             )
                             sItems = sItems + newItem
                             showDialog = false
