@@ -46,11 +46,21 @@ fun AddEditDetailView(
         ) {
             Spacer(modifier = Modifier.height(10.dp))
 
-//            WishTextField("title",)
+            WishTextField("title",
+                value = wishViewModel.wishTitleState,
+                onValueChanged = {
+                    wishViewModel.onWishTitleChanged(it)
+                    //it = editText에 사용자가 쓴 값
+                })
 
             Spacer(modifier = Modifier.height(10.dp))
 
-//            WishTextField("description",)
+            WishTextField("description",
+                value = wishViewModel.wishDescriptionState,
+                onValueChanged = {
+                    wishViewModel.onWishDescriptionChanged(it)
+                    //it = editText에 사용자가 쓴 값
+                })
 
             Spacer(modifier = Modifier.height(20.dp))
 
