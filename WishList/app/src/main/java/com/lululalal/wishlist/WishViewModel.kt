@@ -11,8 +11,8 @@ class WishViewModel:ViewModel() {
     // mutableStateOf사용 ->getValue와 setValue import
     var wishDescriptionState by mutableStateOf("")
 
-    fun onWishTitleChanged(newString: String) {
-        wishTitleState = newString
+    fun onWishTitleChanged(newString: String) { //외부에서 받아온 string
+        wishTitleState = newString // mutableStateOf 타입인 변수에 덮어쓰기
     }
     fun onWishDescriptionChanged(newString: String) {
         wishDescriptionState = newString

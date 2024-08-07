@@ -19,9 +19,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,8 +66,25 @@ fun AddEditDetailView(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Button(onClick = { /*TODO*/ }) {
-                Text(text = "Update Wish")
+            Button(onClick =
+                { /*데이터 데이스  Room에 저장하기*/
+                    if (wishViewModel.wishTitleState.isNotEmpty()
+                        && wishViewModel.wishDescriptionState.isNotEmpty()) {
+                        //기존 데이터 업데이트
+                    } else {
+                        //데이터 추가
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()) {
+                //버튼 텍스트를 표시하되 뭔가를 받아왔는지에 따라 달라질것
+                Text(
+                    text =
+                    if (id != 0L) stringResource(id = R.string.update_wish)    
+                        else stringResource(id = R.string.add_wish),
+                    style = TextStyle(
+                        fontSize = 18.sp
+                    )
+                )
             }
         }
     }

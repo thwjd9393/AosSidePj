@@ -21,6 +21,10 @@ fun Navigation(viewModel: WishViewModel = viewModel(),
         composable(Screen.HomeScreen.route) {
             HomeView()
         }
+
+        composable(Screen.AddScreen.route) {
+            AddEditDetailView(id = 0L, wishViewModel = viewModel, navController = navController)
+        }
     }
 
 }
