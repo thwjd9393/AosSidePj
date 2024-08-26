@@ -32,11 +32,16 @@ fun AddEditDetailView(
     id : Long,
     wishViewModel: WishViewModel,
     navController: NavController) {
-    Scaffold(
+    Scaffold( // AppBar의 onBackNavClicked()은 Scaffold에 작성
         topBar = { AppBarView(title =
                 if (id != 0L) stringResource(id = R.string.update_wish)
                 else stringResource(id = R.string.add_wish)
             )
+            {
+                navController.navigateUp()
+                // navigateUp() => HomeView로 돌아감
+                // 사용자를 이전에 있던 화면으로 돌아가게 하는 것을 의도
+            }
         }
     ) {
         Column(
@@ -50,14 +55,14 @@ fun AddEditDetailView(
 
             WishTextField("title",
                 value = wishViewModel.wishTitleState,
-                onValueChanged = {
+                onValueChanged = { //onValueChanged -> 일어날 일 적기
                     wishViewModel.onWishTitleChanged(it)
                     //it = editText에 사용자가 쓴 값
                 })
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            WishTextField("description",
+            WishTextField("Description",
                 value = wishViewModel.wishDescriptionState,
                 onValueChanged = {
                     wishViewModel.onWishDescriptionChanged(it)

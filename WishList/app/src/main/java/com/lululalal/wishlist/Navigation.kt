@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 fun Navigation(viewModel: WishViewModel = viewModel(),
                navController: NavHostController = rememberNavController()) {
     //NavController에 초기상태 rememberNavController()를 전달 해둠
+    //기본적으로 ViewModel을 쓰고 생성하는 navController 객체들을 기억하라고 명령해둠
 
     NavHost(
         navController = navController,
@@ -19,7 +20,7 @@ fun Navigation(viewModel: WishViewModel = viewModel(),
     ) {
         //화면이 될 composable 추가
         composable(Screen.HomeScreen.route) {
-            HomeView()
+            HomeView(navController, viewModel)
         }
 
         composable(Screen.AddScreen.route) {

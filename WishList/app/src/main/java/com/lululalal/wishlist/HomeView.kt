@@ -22,23 +22,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.lululalal.wishlist.data.DummyWish
 import com.lululalal.wishlist.data.Wish
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeView() {
+fun HomeView(
+    navController: NavController,
+    viewModel: WishViewModel
+) {
     val context = LocalContext.current
     Scaffold(
         topBar = { AppBarView("WishList", {
-            Toast.makeText(context, "클릭", Toast.LENGTH_SHORT).show()
         }) },
         floatingActionButton = {
             FloatingActionButton(
                 modifier = Modifier.padding(all=20.dp),
                 contentColor = Color.White,
                 backgroundColor = Color.Black,
-                onClick = { /* TODO 화면 추가 또는 수정 */}) {
+                onClick = {
+                    navController.navigate(Screen.AddScreen.route)
+                }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "추가")
             }
         }
