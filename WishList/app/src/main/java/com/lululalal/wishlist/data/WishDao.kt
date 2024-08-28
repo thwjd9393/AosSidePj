@@ -17,7 +17,7 @@ abstract class WishDao {
     //suspend 키워드를 사용해서 백그라운드에서 실행되도록 함
     //getAllWishes와 getByWishId엔 안붙여줘도 되는데 이미 코루틴 방식과 비슷한 Flow를 사용하기 떄문
 
-    // onConflict = OnConflictStrategy.IGNORE = 존재하는 항목이 있으면 무시해라
+    // onConflict = OnConflictStrategy.IGNORE = 존재하는 항목이 있으면 무시하고 진행해라
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun addWish(wishEntity : Wish)
 
