@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class WishViewModel(
     //pass로 전달하는 WishRepository를 따로 설정할 필요가 없도록 초기 상태를 설정
-    private val wishRepository: WishRepository
+    private val wishRepository: WishRepository = Graph.wishRepository
 ):ViewModel() {
     //데이터와 UI간의 소통 책임 - 데이터 저장, 로드, 수집, 수정 둥둥
 

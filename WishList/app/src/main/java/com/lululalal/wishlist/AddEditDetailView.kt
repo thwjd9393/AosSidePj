@@ -12,9 +12,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.lululalal.wishlist.data.Wish
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,6 +37,21 @@ fun AddEditDetailView(
     id : Long,
     wishViewModel: WishViewModel,
     navController: NavController) {
+
+    // 스낵바 변수 선언
+    val snackMessage = remember {
+        mutableStateOf("")
+    }
+
+    // 데이터 베이스에 데이터 저장하는 작업 등 비동기로 실행하기 위한 스코프
+    val scope = rememberCoroutineScope()
+
+    // Scaffold State 변수 선언
+    // -> Scaffold : UI의 외관에 대한 디테일이 포함되어 있는 부분
+    //UI 상태를 유지하기 위한 변수
+    val ScaffoldState = rememberScaffoldState()
+
+
     Scaffold( // AppBar의 onBackNavClicked()은 Scaffold에 작성
         topBar = { AppBarView(title =
                 if (id != 0L) stringResource(id = R.string.update_wish)
@@ -75,9 +95,22 @@ fun AddEditDetailView(
                 { /*데이터 데이스  Room에 저장하기*/
                     if (wishViewModel.wishTitleState.isNotEmpty()
                         && wishViewModel.wishDescriptionState.isNotEmpty()) {
-                        //기존 데이터 업데이트
+                        if (id != 0L) {
+                            //TODO 기존 데이터 업데이트
+
+                        } else {
+                            //TODO 데이터 추가
+                            wishViewModel.addWish(
+                                Wish(
+                                    title = wishViewModel.wishTitleState.trim(),
+                                    description = wishViewModel.wishDescriptionState.trim()
+                                )
+                            )
+                            snackMessage.value = "등록 완료"
+                        }
                     } else {
-                        //데이터 추가
+                        //TODO 필드 작성 & wish 항목 생성
+                        snackMessage.value = "항목 생성을 위해 필드를 작성하세요"
                     }
                 },
                 modifier = Modifier.fillMaxWidth()) {
