@@ -1,5 +1,6 @@
 package com.lululalal.wishlist
 
+import androidx.collection.scatterSetOf
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,11 +12,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Scaffold
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -30,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.lululalal.wishlist.data.Wish
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,10 +52,20 @@ fun AddEditDetailView(
     // Scaffold State 변수 선언
     // -> Scaffold : UI의 외관에 대한 디테일이 포함되어 있는 부분
     //UI 상태를 유지하기 위한 변수
-    val ScaffoldState = rememberScaffoldState()
+    val scaffoldState = rememberScaffoldState()
 
+    //wishViewModel 셋팅하는 부분 추가
+    if (id != 0L) {
+        val wish = wishViewModel.getByWishId(id).collectAsState(initial = Wish(0L,"","")) //초기값 설정
+        wishViewModel.wishTitleState = wish.value.title
+        wishViewModel.wishDescriptionState = wish.value.description
+    } else {
+        wishViewModel.wishTitleState = ""
+        wishViewModel.wishDescriptionState = ""
+    }
 
     Scaffold( // AppBar의 onBackNavClicked()은 Scaffold에 작성
+        scaffoldState = scaffoldState, //Scaffold에 상태 유지용 매개변수로 넣기
         topBar = { AppBarView(title =
                 if (id != 0L) stringResource(id = R.string.update_wish)
                 else stringResource(id = R.string.add_wish)
@@ -97,7 +110,13 @@ fun AddEditDetailView(
                         && wishViewModel.wishDescriptionState.isNotEmpty()) {
                         if (id != 0L) {
                             //TODO 기존 데이터 업데이트
-
+                            wishViewModel.updateWish(
+                                Wish(
+                                    id = id,
+                                    title = wishViewModel.wishTitleState.trim(),
+                                    description = wishViewModel.wishDescriptionState.trim()
+                                )
+                            )
                         } else {
                             //TODO 데이터 추가
                             wishViewModel.addWish(
@@ -111,6 +130,12 @@ fun AddEditDetailView(
                     } else {
                         //TODO 필드 작성 & wish 항목 생성
                         snackMessage.value = "항목 생성을 위해 필드를 작성하세요"
+                    }
+
+                    //생성 후 페이지 이동
+                    scope.launch {
+                        scaffoldState.snackbarHostState.showSnackbar(snackMessage.value)
+                        navController.navigateUp()
                     }
                 },
                 modifier = Modifier.fillMaxWidth()) {

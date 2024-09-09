@@ -14,6 +14,6 @@ class WishRepository(private val wishDao: WishDao) {
 
     suspend fun updateWish(wish:Wish) = wishDao.updateWish(wish)
 
-    suspend fun deleteWish(wish:Wish) = wishDao.updateWish(wish)
+    suspend fun deleteWish(wish:Wish) = wishDao.deleteWish(wish)
 
 }
