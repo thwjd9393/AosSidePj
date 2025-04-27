@@ -1,0 +1,74 @@
+plugins {
+    alias(libs.plugins.android.application)
+    id("com.chaquo.python")
+}
+
+android {
+    namespace 'com.lullulalal.sendtopython'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.lullulalal.sendtopython"
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+        }
+
+        python {
+            buildPython "C:/Python311/python.exe"
+            pip {
+//                install "six", "urllib3"
+                install "numpy"
+                install "scikit-learn"
+                install "opencv-python"
+            }
+        }
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    buildFeatures {
+        viewBinding = true
+    }
+}
+chaquopy {
+    defaultConfig {
+        extractPackages("package1", "package2.subpkg")
+    }
+}
+
+dependencies {
+
+    implementation libs.appcompat
+    implementation libs.material
+    implementation libs.activity
+    implementation libs.constraintlayout
+    testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
+    releaseImplementation libs.chaquopy
+    // CameraX
+    implementation "androidx.camera:camera-core:1.2.2"
+    implementation "androidx.camera:camera-camera2:1.2.2"
+    implementation "androidx.camera:camera-lifecycle:1.2.2"
+    implementation "androidx.camera:camera-view:1.2.2"
+
+    // Retrofit (서버 통신용)
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+}
